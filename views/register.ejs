@@ -33,58 +33,56 @@
     <section>
       <div class="form-box">
         <div class="form-value">
-          <% if (messages.length> 0) { %>
+          <% if (messages.length > 0) { %>
             <div class="error-message">
-              <% for (var i=0; i < messages.length; i++) { %>
-                <p>
-                  <%= messages[i] %>
-                </p>
-                <% } %>
+              <% for (var i = 0; i < messages.length; i++) { %>
+                <p><%= messages[i] %></p>
+              <% } %>
             </div>
-            <% } %>
-              <form method="POST" action="../register">
-                <h2>Register</h2>
-                <div id="fullname">
-                  <!--First Name-->
-                  <div class="inputbox" id="fullname>
-                    <ion-icon name=" person"></ion-icon>
-                    <input type="text" id="fname" name="firstname" value="<%= firstname %>" required />
-                    <label id="firstName" for="fname">First Name</label>
-                  </div>
-                  <!--Last Name-->
-                  <div class="inputbox">
-                    <ion-icon name="person"></ion-icon>
-                    <input type="text" id="lname" name="lastname" value="<%= lastname %>" required />
-                    <label id="lastName" for="lname">Last Name</label>
-                  </div>
-                </div>
-                <div class="inputbox">
-                  <ion-icon name="mail-outline"></ion-icon>
-                  <input type="email" id="email" name="email" value="<%= email %>" required>
-                  <label for="email">Email</label>
-                </div>
-                <div class="inputbox">
-                  <div class="password-container">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="password" name="password" required>
-                    <label for="password">Password</label>
-                    <span class="password-toggle" onclick="togglePasswordVisibility('password', this)">
-                      <ion-icon name="eye"></ion-icon>
-                    </span>
-                  </div>
-                </div>
-                <div class="inputbox">
-                  <div class="password-container">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                    <label for="confirmPassword">Confirm Password</label>
-                    <span class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)">
-                      <ion-icon name="eye"></ion-icon>
-                    </span>
-                  </div>
-                </div>
-                <button type="submit">Sign Up</button>
-              </form>
+          <% } %>
+          <form method="POST" action="../register">
+            <h2>Register</h2>
+            <div id="fullname">
+              <!-- First Name -->
+              <div class="inputbox">
+                <ion-icon name="person"></ion-icon>
+                <input type="text" id="fname" name="first_name" value="<%= first_name %>" required />
+                <label for="fname">First Name</label>
+              </div>
+              <!-- Last Name -->
+              <div class="inputbox">
+                <ion-icon name="person"></ion-icon>
+                <input type="text" id="lname" name="last_name" value="<%= last_name %>" required />
+                <label for="lname">Last Name</label>
+              </div>
+            </div>
+            <div class="inputbox">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input type="email" id="email" name="email" value="<%= email %>" required>
+              <label for="email">Email</label>
+            </div>
+            <div class="inputbox">
+              <div class="password-container">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <span class="password-toggle" onclick="togglePasswordVisibility('password', this)">
+                  <ion-icon name="eye"></ion-icon>
+                </span>
+              </div>
+            </div>
+            <div class="inputbox">
+              <div class="password-container">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <label for="confirmPassword">Confirm Password</label>
+                <span class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)">
+                  <ion-icon name="eye"></ion-icon>
+                </span>
+              </div>
+            </div>
+            <button type="submit">Sign Up</button>
+          </form>
         </div>
       </div>
     </section>

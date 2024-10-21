@@ -3,87 +3,77 @@ const router = express.Router();
 const requireAuth = require('../auth');
 const db = require('../config/db');
 
+// Utility function to render the home view
+function renderHome(res, user, messages = [], searchQueryResult = [], searchQuery = null) {
+    res.render('home.ejs', {
+        fullName: user.fullName,
+        user,
+        messages,
+        searchQueryResult,
+        searchQuery,
+    });
+}
+
 // Search for a client
 router.post('/search', requireAuth, (req, res) => {
     const { searchQuery } = req.body;
+    const messages = req.flash('error'); // Retrieve flash messages
+
     if (searchQuery) {
         const searchTerm = `%${searchQuery}%`;
-        const searchQueryResult = `SELECT * FROM clients WHERE firstname LIKE ? OR lastname LIKE ? OR email LIKE ? OR phoneNumber LIKE ?`;
+        const searchQuerySQL = `SELECT * FROM clients WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phoneNumber LIKE ?`;
 
-        db.clientDbConfig.query(searchQueryResult, [searchTerm, searchTerm, searchTerm, searchTerm], (error, results) => {
+        db.clientDbConfig.query(searchQuerySQL, [searchTerm, searchTerm, searchTerm, searchTerm], (error, results) => {
             if (error) {
-                console.error("Database error:", error);
                 req.flash('error', 'An error occurred while fetching clients. Please try again later.');
-                return res.render('home.ejs', { 
-                    messages: req.flash('error'), 
-                    fullName: req.session.user.fullName, 
-                    user: req.session.user, 
-                    searchQuery 
-                });
+                return renderHome(res, req.session.user, req.flash('error'));
             }
-            res.render('home.ejs', { 
-                fullName: req.session.user.fullName, 
-                user: req.session.user, 
-                searchQueryResult: results, 
-                searchQuery 
-            });
+            renderHome(res, req.session.user, [], results, searchQuery);
         });
     } else {
-        res.render('home.ejs', { 
-            fullName: req.session.user.fullName, 
-            user: req.session.user, 
-            searchQueryResult: [], 
-            searchQuery: null 
-        });
+        renderHome(res, req.session.user);
     }
 });
 
 // Display dashboard
 router.get('/', requireAuth, (req, res) => {
-    if (req.session.user) {
-        return res.render('home.ejs', {
-            fullName: req.session.user.fullName,
-            user: req.session.user,
-            searchQueryResult: [],
-            searchQuery: null
-        });
-    }
-    res.redirect('/login');
+    renderHome(res, req.session.user);
 });
 
 // Add new client form
 router.get('/addClient', requireAuth, (req, res) => {
-    res.render('addclient.ejs', { fullName: req.session.user.fullName });
+    renderHome(res, req.session.user);
 });
 
 // Add new client (POST)
 router.post('/addClient', requireAuth, (req, res) => {
-    const { firstname, lastname, email, phoneNumber } = req.body;
+    const { first_name, last_name, email, phoneNumber } = req.body;
+    const messages = req.flash('error');
 
     if (!isValidPhoneNumber(phoneNumber)) {
         req.flash('error', 'Invalid phone number. Please enter a valid international phone number.');
-        return res.render('home.ejs', { messages: req.flash('error'), fullName: req.session.user.fullName });
+        return renderHome(res, req.session.user, messages);
     }
 
     const selectQuery = 'SELECT * FROM clients WHERE email = ?';
     db.clientDbConfig.query(selectQuery, [email], (error, results) => {
         if (error) {
             req.flash('error', 'Error checking email. Try again later.');
-            return res.render('home.ejs', { messages: req.flash('error'), fullName: req.session.user.fullName });
+            return renderHome(res, req.session.user, messages);
         }
         if (results.length > 0) {
             req.flash('error', 'Email already registered.');
-            return res.render('home.ejs', { messages: req.flash('error'), fullName: req.session.user.fullName });
+            return renderHome(res, req.session.user, messages);
         }
 
-        const insertQuery = 'INSERT INTO clients (firstname, lastname, email, phoneNumber) VALUES (?, ?, ?, ?)';
-        db.clientDbConfig.query(insertQuery, [firstname, lastname, email, phoneNumber], (error) => {
+        const insertQuery = 'INSERT INTO clients (first_name, last_name, email, phoneNumber) VALUES (?, ?, ?, ?)';
+        db.clientDbConfig.query(insertQuery, [first_name, last_name, email, phoneNumber], (error) => {
             if (error) {
                 req.flash('error', 'Error adding client. Try again later.');
-                return res.render('home.ejs', { messages: req.flash('error'), fullName: req.session.user.fullName });
+                return renderHome(res, req.session.user, messages);
             }
-            req.flash('success', `${firstname} added successfully.`);
-            res.render('home.ejs', { messages: req.flash('success'), fullName: req.session.user.fullName });
+            req.flash('success', `${first_name} added successfully.`);
+            renderHome(res, req.session.user, req.flash('success'));
         });
     });
 });

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,7 +18,6 @@
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
-
 <body>
   <div class="area">
     <header>
@@ -32,7 +30,7 @@
       </nav>
     </header>
     <main>
-      <h1>Welcome <%- fullName %></h1>
+      <h1>Welcome <%= fullName %></h1>
       <div class="dashboard-container">
         <div class="searchQuery-container">
           <div class="searchQuery-box">
@@ -45,35 +43,27 @@
             <table>
               <thead>
                 <tr>
-                  <th style="background-color: transparent; text-align: center; padding: 8px;">First Name</th>
-                  <th style="background-color: transparent; text-align: center; padding: 8px;">Last Name</th>
-                  <th style="background-color: transparent; text-align: center; padding: 8px;">Email</th>
-                  <th style="background-color: transparent; text-align: center; padding: 8px;">Phone Number</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Phone Number</th>
                 </tr>
               </thead>
               <tbody>
-                <% if (typeof searchQueryResult !=='undefined' && searchQueryResult.length> 0) { %>
+                <% if (Array.isArray(searchQueryResult) && searchQueryResult.length > 0) { %>
                   <% searchQueryResult.forEach(function(client) { %>
                     <tr>
-                      <td>
-                        <%= client.firstname %>
-                      </td>
-                      <td>
-                        <%= client.lastname %>
-                      </td>
-                      <td>
-                        <%= client.email %>
-                      </td>
-                      <td>
-                        <%= client.phoneNumber %>
-                      </td>
+                      <td><%= client.first_name %></td>
+                      <td><%= client.last_name %></td>
+                      <td><%= client.email %></td>
+                      <td><%= client.phoneNumber %></td>
                     </tr>
-                    <% }); %>
-                      <% } else { %>
-                        <tr>
-                          <td colspan="4"></td>
-                        </tr>
-                        <% } %>
+                  <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="4">No results found.</td>
+                  </tr>
+                <% } %>
               </tbody>
             </table>
           </div>
@@ -81,39 +71,37 @@
         <br>
         <div class="form-container">
           <div class="form-box">
-            <% if (typeof messages !=='undefined' && messages.length> 0) { %>
+            <% if (messages && messages.length > 0) { %>
               <div class="error-message">
-                <% for (var i=0; i < messages.length; i++) { %>
-                  <p>
-                    <%= messages[i] %>
-                  </p>
-                  <% } %>
+                <% messages.forEach(function(message) { %>
+                  <p><%= message %></p>
+                <% }); %>
               </div>
-              <% } %>
-                <form method="POST" action="/dashboard/addClient">
-                  <h2>Add new client</h2>
-                  <div class="inputbox">
-                    <ion-icon name="person"></ion-icon>
-                    <input type="text" id="firstname" name="firstname" required>
-                    <label for="firstname">First Name</label>
-                  </div>
-                  <div class="inputbox">
-                    <ion-icon name="person"></ion-icon>
-                    <input type="text" id="lastname" name="lastname" required>
-                    <label for="lastname">Last Name</label>
-                  </div>
-                  <div class="inputbox">
-                    <ion-icon name="mail-outline"></ion-icon>
-                    <input type="text" id="email" name="email" required>
-                    <label for="email">Email</label>
-                  </div>
-                  <div class="inputbox">
-                    <input type="text" id="phone" name="phoneNumber" required>
-                    <label for="phone">Phone</label>
-                    <ion-icon name="call-outline"></ion-icon>
-                  </div>
-                  <button id="addUserBtn">Add user</button>
-                </form>
+            <% } %>
+            <form method="POST" action="/dashboard/addClient">
+              <h2>Add new client</h2>
+              <div class="inputbox">
+                <ion-icon name="person"></ion-icon>
+                <input type="text" id="first_name" name="first_name" required>
+                <label for="first_name">First Name</label>
+              </div>
+              <div class="inputbox">
+                <ion-icon name="person"></ion-icon>
+                <input type="text" id="last_name" name="last_name" required>
+                <label for="last_name">Last Name</label>
+              </div>
+              <div class="inputbox">
+                <ion-icon name="mail-outline"></ion-icon>
+                <input type="email" id="email" name="email" required>
+                <label for="email">Email</label>
+              </div>
+              <div class="inputbox">
+                <ion-icon name="call-outline"></ion-icon>
+                <input type="tel" id="phone" name="phoneNumber" required>
+                <label for="phone">Phone</label>
+              </div>
+              <button id="addUserBtn">Add User</button>
+            </form>
           </div>
         </div>
       </div>
@@ -127,12 +115,10 @@
       <li></li>
       <li></li>
       <li></li>
-      <li></li>
-      <li></li>
     </ul>
     <footer>
-      <p>&copy by Communication-LTD</p>
+      <p>&copy; Communication-LTD</p>
     </footer>
+  </div>
 </body>
-
 </html>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,7 +19,6 @@
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
-
 <body>
   <div class="area">
     <header>
@@ -33,42 +31,38 @@
     <section>
       <div class="form-box">
         <div class="form-value">
-          <% if (messages.length> 0) { %>
+          <% if (messages && messages.length > 0) { %>
             <div class="error-message">
-              <% for (var i=0; i < messages.length; i++) { %>
-                <p>
-                  <%= messages[i] %>
-                </p>
-                <% } %>
+              <% messages.forEach(function(message) { %>
+                <p><%= message %></p>
+              <% }); %>
             </div>
-            <% } %>
-              <form method="POST" action="/">
-                <h2>Login</h2>
-                <div class="inputbox">
-                  <ion-icon name="mail-outline"></ion-icon>
-                  <input type="email" id="email" name="email" required>
-                  <label for="email">Email</label>
-                </div>
-                <div class="inputbox">
-                  <div class="password-container">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="password" name="password" required>
-                    <label for="password">Password</label>
-                    <span class="password-toggle" onclick="togglePasswordVisibility('password', this)">
-                      <ion-icon name="eye"></ion-icon>
-                    </span>
-                  </div>
-                </div>
-                <button>Login</button>
-                <div class="register">Need an account? <a class="register-link" href="register">Sign up</a></div>
-                <div class="forget">Forgot your password? <a class="forgot-password-link" href="passwordReset">Reset
-                    it</a></div>
-              </form>
+          <% } %>
+          <form method="POST" action="/">
+            <h2>Login</h2>
+            <div class="inputbox">
+              <ion-icon name="mail-outline"></ion-icon>
+              <input type="email" id="email" name="email" required>
+              <label for="email">Email</label>
+            </div>
+            <div class="inputbox">
+              <div class="password-container">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <span class="password-toggle" onclick="togglePasswordVisibility('password', this)">
+                  <ion-icon name="eye"></ion-icon>
+                </span>
+              </div>
+            </div>
+            <button>Login</button>
+            <div class="register">Need an account? <a class="register-link" href="/register">Sign up</a></div>
+            <div class="forget">Forgot your password? <a class="forgot-password-link" href="/passwordReset">Reset it</a></div>
+          </form>
         </div>
       </div>
     </section>
     <ul class="circles">
-      <li></li>
       <li></li>
       <li></li>
       <li></li>
@@ -94,5 +88,4 @@
     }
   </script>
 </body>
-
 </html>

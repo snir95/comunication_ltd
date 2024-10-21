@@ -56,7 +56,7 @@
                       <td><%= client.first_name %></td>
                       <td><%= client.last_name %></td>
                       <td><%= client.email %></td>
-                      <td><%= client.phoneNumber %></td>
+                      <td><%= client.phone_number %></td>
                     </tr>
                   <% }); %>
                 <% } else { %>
@@ -97,10 +97,11 @@
               </div>
               <div class="inputbox">
                 <ion-icon name="call-outline"></ion-icon>
-                <input type="tel" id="phone" name="phoneNumber" required>
+                <input type="tel" id="phone" name="phone_number" required>
                 <label for="phone">Phone</label>
               </div>
-              <button id="addUserBtn">Add User</button>
+              <!-- Added type="submit" to ensure form submission -->
+              <button id="addUserBtn" type="submit">Add User</button>
             </form>
           </div>
         </div>

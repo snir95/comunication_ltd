@@ -11,9 +11,9 @@ const complexity = process.env.PASSWORD_COMPLEXITY || 'uppercase,lowercase,numbe
 
 router.get('/', function (req, res) {
     if (!req.session?.user) {
-        return res.redirect('/login'); // Redirect if not logged in
+        return res.redirect('/login');
     }
-    res.status(200).render('newPassword.ejs', { user: req.session.user, errorMessage: null });
+    res.status(200).render('newPassword.ejs', { user: req.session.user, errorMessage: req.flash('error'), errorMessage1: req.flash('info') });
 });
 
 function query(sql, args) {
@@ -30,16 +30,21 @@ router.post('/', async function (req, res) {
         return res.redirect('/login');
     }
     const { currentPassword, newPassword, newPasswordConfirm } = req.body;
-    const userId = req.session.user.userid;
+    const userId = req.session.user.id;
 
+    // Check if passwords match
     if (newPassword !== newPasswordConfirm) {
-        return res.status(400).render('newPassword.ejs', { errorMessage: 'Passwords do not match!' });
+        req.flash('error', 'Passwords do not match!');
+        return res.redirect('/newPassword');
     }
 
+    // Check if password is in the list of weak passwords
     if (badPasswords.includes(newPassword)) {
-        return res.status(400).render('newPassword.ejs', { errorMessage: 'Password is too weak!' });
+        req.flash('error', 'Password is too weak!');
+        return res.redirect('/newPassword');
     }
 
+    // Validate password strength
     if (!validator.isStrongPassword(newPassword, {
         minLength: minLength,
         minLowercase: 1,
@@ -47,27 +52,30 @@ router.post('/', async function (req, res) {
         minNumbers: 1,
         minSymbols: 1,
     })) {
-        return res.status(400).render('newPassword.ejs', {
-            errorMessage: `Password must be at least ${minLength} characters long and include: ${complexity}`,
-        });
+        req.flash('error', `Password must be at least ${minLength} characters long and include: ${complexity}`);
+        return res.redirect('/newPassword');
     }
 
     const dbUser = await query('SELECT password, password_history FROM users WHERE id = ?', [userId]);
     if (!dbUser.length) {
-        return res.status(404).render('newPassword.ejs', { errorMessage: 'User not found!' });
+        req.flash('error', 'User not found!');
+        return res.redirect('/newPassword');
     }
 
+    // Compare current password with the stored password
     const passwordMatch = await bcrypt.compare(currentPassword, dbUser[0].password);
     if (!passwordMatch) {
-        return res.status(400).render('newPassword.ejs', { errorMessage: 'Current password is incorrect.' });
+        req.flash('error', 'Current password is incorrect.');
+        return res.redirect('/newPassword');
     }
 
     const passwordHistory = dbUser[0].password_history ? JSON.parse(dbUser[0].password_history) : [];
 
-    // Check if new password was used in the past `historyLimit` passwords
+    // Check if the new password matches any of the recent passwords
     for (let oldPassword of passwordHistory.slice(0, historyLimit)) {
         if (await bcrypt.compare(newPassword, oldPassword)) {
-            return res.status(400).render('newPassword.ejs', { errorMessage: `Password cannot be one of the last ${historyLimit} passwords.` });
+            req.flash('error', `Password cannot be one of the last ${historyLimit} passwords.`);
+            return res.redirect('/newPassword');
         }
     }
 
@@ -80,7 +88,8 @@ router.post('/', async function (req, res) {
         userId,
     ]);
 
-    res.redirect('/');
+    req.flash('info', 'Password changed successfully!');
+    res.redirect('/'); // Redirect to home page
 });
 
 module.exports = router;

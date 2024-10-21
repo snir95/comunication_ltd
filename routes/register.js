@@ -20,6 +20,18 @@ router.post('/', (req, res) => {
         return res.status(400).render('register.ejs', { messages: req.flash('error'), first_name, last_name, email });
     }
 
+
+    if (!validator.isStrongPassword(password, {
+        minLength: minLength,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+    })) {
+        req.flash('error', `Password must be at least ${minLength} characters long and include: ${complexity}.`);
+        return res.status(400).render('register.ejs', { messages: req.flash('error'), first_name, last_name, email })
+    }
+
     if (password !== confirmPassword) {
         req.flash('error', 'Passwords do not match.');
         return res.status(400).render('register.ejs', { messages: req.flash('error'), first_name, last_name, email });

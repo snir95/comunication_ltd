@@ -21,7 +21,7 @@ router.post('/search', requireAuth, (req, res) => {
 
     if (searchQuery) {
         const searchTerm = `%${searchQuery}%`;
-        const searchQuerySQL = `SELECT * FROM clients WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phoneNumber LIKE ?`;
+        const searchQuerySQL = `SELECT * FROM clients WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phone_number LIKE ?`;
 
         db.clientDbConfig.query(searchQuerySQL, [searchTerm, searchTerm, searchTerm, searchTerm], (error, results) => {
             if (error) {
@@ -47,10 +47,12 @@ router.get('/addClient', requireAuth, (req, res) => {
 
 // Add new client (POST)
 router.post('/addClient', requireAuth, (req, res) => {
-    const { first_name, last_name, email, phoneNumber } = req.body;
+    console.log(req.body);
+    
+    const { first_name, last_name, email, phone_number } = req.body;
     const messages = req.flash('error');
 
-    if (!isValidPhoneNumber(phoneNumber)) {
+    if (!isValidphoneNumber(phone_number)) {
         req.flash('error', 'Invalid phone number. Please enter a valid international phone number.');
         return renderHome(res, req.session.user, messages);
     }
@@ -66,22 +68,23 @@ router.post('/addClient', requireAuth, (req, res) => {
             return renderHome(res, req.session.user, messages);
         }
 
-        const insertQuery = 'INSERT INTO clients (first_name, last_name, email, phoneNumber) VALUES (?, ?, ?, ?)';
-        db.clientDbConfig.query(insertQuery, [first_name, last_name, email, phoneNumber], (error) => {
+        const insertQuery = 'INSERT INTO clients (first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?)';
+        db.clientDbConfig.query(insertQuery, [first_name, last_name, email, phone_number], (error) => {
             if (error) {
                 req.flash('error', 'Error adding client. Try again later.');
                 return renderHome(res, req.session.user, messages);
             }
             req.flash('success', `${first_name} added successfully.`);
-            renderHome(res, req.session.user, req.flash('success'));
+            return res.send('Client added successfully!');
         });
     });
 });
 
+
 // Helper function
-function isValidPhoneNumber(phoneNumber) {
+function isValidphoneNumber(phone_number) {
     const phoneNumberRegex = /^\+972\d{8,9}$/;
-    return phoneNumberRegex.test(phoneNumber);
+    return phoneNumberRegex.test(phone_number);
 }
 
 module.exports = router;

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      transition: background-color 5000s ease-in-out 0s;
+      -webkit-text-fill-color: #fff !important;
+    }
+  </style>
+  <link rel="stylesheet" href="/home.css" />
+  <link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+  <div class="area">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/newPassword" id="newPassword-link">Change password</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h1>Welcome <%- fullName %></h1>
+      <div class="dashboard-container">
+        <div class="searchQuery-container">
+          <div class="searchQuery-box">
+            <h2>Clients</h2>
+            <form method="POST" action="/dashboard/search">
+              <input type="text" id="searchQuery" name="searchQuery" placeholder="Search clients">
+              <br>
+              <button type="submit">Search</button>
+            </form>
+            <table>
+              <thead>
+                <tr>
+                  <th style="background-color: transparent; text-align: center; padding: 8px;">First Name</th>
+                  <th style="background-color: transparent; text-align: center; padding: 8px;">Last Name</th>
+                  <th style="background-color: transparent; text-align: center; padding: 8px;">Email</th>
+                  <th style="background-color: transparent; text-align: center; padding: 8px;">Phone Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (typeof searchQueryResult !=='undefined' && searchQueryResult.length> 0) { %>
+                  <% searchQueryResult.forEach(function(client) { %>
+                    <tr>
+                      <td>
+                        <%= client.firstname %>
+                      </td>
+                      <td>
+                        <%= client.lastname %>
+                      </td>
+                      <td>
+                        <%= client.email %>
+                      </td>
+                      <td>
+                        <%= client.phoneNumber %>
+                      </td>
+                    </tr>
+                    <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="4"></td>
+                        </tr>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br>
+        <div class="form-container">
+          <div class="form-box">
+            <% if (typeof messages !=='undefined' && messages.length> 0) { %>
+              <div class="error-message">
+                <% for (var i=0; i < messages.length; i++) { %>
+                  <p>
+                    <%= messages[i] %>
+                  </p>
+                  <% } %>
+              </div>
+              <% } %>
+                <form method="POST" action="/dashboard/addClient">
+                  <h2>Add new client</h2>
+                  <div class="inputbox">
+                    <ion-icon name="person"></ion-icon>
+                    <input type="text" id="firstname" name="firstname" required>
+                    <label for="firstname">First Name</label>
+                  </div>
+                  <div class="inputbox">
+                    <ion-icon name="person"></ion-icon>
+                    <input type="text" id="lastname" name="lastname" required>
+                    <label for="lastname">Last Name</label>
+                  </div>
+                  <div class="inputbox">
+                    <ion-icon name="mail-outline"></ion-icon>
+                    <input type="text" id="email" name="email" required>
+                    <label for="email">Email</label>
+                  </div>
+                  <div class="inputbox">
+                    <input type="text" id="phone" name="phoneNumber" required>
+                    <label for="phone">Phone</label>
+                    <ion-icon name="call-outline"></ion-icon>
+                  </div>
+                  <button id="addUserBtn">Add user</button>
+                </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    <ul class="circles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <footer>
+      <p>&copy by Communication-LTD</p>
+    </footer>
+</body>
+
+</html>

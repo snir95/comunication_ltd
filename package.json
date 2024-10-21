@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -11,8 +12,25 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
     "express": "^4.21.1",
-    "mysql2": "^3.11.3"
+    "express-ejs-layouts": "^2.5.1",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.3",
+    "nodemailer": "^6.9.15",
+    "npm": "^10.9.0",
+    "serve-favicon": "^2.5.0",
+    "validator": "^13.12.0"
   }
 }

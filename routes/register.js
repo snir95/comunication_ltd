@@ -3,6 +3,10 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('../config/db');
 const badPasswords = ["mypassword", "password1234", "1234567890", "0987654321"];
+const validator = require('validator');
+
+const minLength = parseInt(process.env.PASSWORD_LENGTH || 10);
+const complexity = process.env.PASSWORD_COMPLEXITY || 'uppercase,lowercase,numbers,special_characters';
 
 // GET route to render the registration form
 router.get('/', (req, res) => {
@@ -19,7 +23,6 @@ router.post('/', (req, res) => {
         req.flash('error', 'Password too weak. Please choose a stronger one.');
         return res.status(400).render('register.ejs', { messages: req.flash('error'), first_name, last_name, email });
     }
-
 
     if (!validator.isStrongPassword(password, {
         minLength: minLength,

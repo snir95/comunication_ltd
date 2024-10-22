@@ -5,15 +5,23 @@ const db = require('../config/db');
 const loginLimiter = require('./loginLimiter');
 
 router.get('/', (req, res) => {
+    const logoutMessage = req.query.message;
+    let messages = req.flash('error');
+
+    if (logoutMessage) {
+        messages.push(logoutMessage);
+    }
+
     if (req.session.user) {
-        const searchQueryResult = []; // Initialize as empty array
+        const searchQueryResult = [];
         return res.render('home.ejs', { 
             fullName: req.session.user.fullName, 
             user: req.session.user,
-            searchQueryResult 
+            searchQueryResult,
+            messages: messages
         });
     }
-    res.status(200).render('login.ejs', { messages: req.flash('error') });
+    res.status(200).render('login.ejs', { messages: messages });
 });
 
 router.post('/', loginLimiter, (req, res) => {

@@ -34,7 +34,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(flash());
 
 app.use(session({
   name: 'LTDsession',
@@ -47,6 +46,9 @@ app.use(session({
     maxAge: 3600000 // session expires in 1 hour
   }
 }));
+
+app.use(flash());
+
 
 app.use((req, res, next) => {
   if (req.session && req.session.user) {

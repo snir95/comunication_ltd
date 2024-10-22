@@ -31,9 +31,9 @@ app.set('views', __dirname + '/views')
 app.use(express.static('public'))
 app.use(logger('dev'))
 app.use(cookieParser());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
 
 app.use(session({
   name: 'LTDsession',
@@ -43,7 +43,7 @@ app.use(session({
   cookie: {
     secure: true,
     httpOnly: true,
-    maxAge: 3600000 // session expires in 1 hour
+    maxAge: 3600000 // 1 hour
   }
 }));
 

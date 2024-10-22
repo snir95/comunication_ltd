@@ -2,24 +2,27 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 
-router.get('/', function (req, res) {
-    const hashedCode = req.session.hashedCode;
-    if (!hashedCode) {
-        return res.status(400).render('verificationCode.ejs', { errorMessage: 'No verification code found!' });
-    }
-    return res.status(200).render('verificationCode.ejs', { errorMessage: null });
+router.get('/', (req, res) => {
+    res.render('verificationCode.ejs', { errorMessage: null });
 });
 
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
     const { code } = req.body;
     const hashedCode = req.session.hashedCode;
+    const resetEmail = req.session.resetEmail;
 
-    const hashedInput = crypto.createHash('sha1').update(code).digest('hex');
-    if (hashedInput === hashedCode) {
-        req.session.hashedCode = null; // Clear the session code after use
-        return res.redirect('/choosePassword');
+    if (!hashedCode || !resetEmail) {
+        return res.render('verificationCode.ejs', { errorMessage: 'Session expired. Please try again.' });
+    }
+
+    const inputHashedCode = crypto.createHash('sha256').update(code).digest('hex');
+
+    if (inputHashedCode === hashedCode) {
+        // Code is correct, allow password reset
+        req.session.allowReset = true;
+        res.redirect('/choosePassword');
     } else {
-        return res.status(400).render('verificationCode.ejs', { errorMessage: 'Verification code is incorrect.' });
+        res.render('verificationCode.ejs', { errorMessage: 'Invalid code. Please try again.' });
     }
 });
 
